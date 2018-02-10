@@ -1,0 +1,25 @@
+{
+  "name": "hyutils",
+  "version": "1.0.0",
+  "description": "some useful utils tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maihaihua/hyutils.git"
+  },
+  "keywords": [
+    "tools"
+  ],
+  "author": "maihaihua",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maihaihua/hyutils/issues"
+  },
+  "homepage": "https://github.com/maihaihua/hyutils#readme",
+  "dependencies": {
+    "request": "^2.83.0"
+  }
+}
