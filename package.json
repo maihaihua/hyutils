@@ -1,6 +1,6 @@
 {
   "name": "@maihaihua/hyutils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "some useful utils tool",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/maihaihua/hyutils#readme",
   "dependencies": {
-    "hyutils": "github:maihaihua/hyutils",
     "request": "^2.83.0",
     "uuid": "^3.2.1"
   }
