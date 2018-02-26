@@ -11,9 +11,11 @@ class DownloadUtil {
     }
     init(options) {
         var self = this;
+        this.retry = 10;
+        this.queueLimit = 10;
         if (typeof options === 'object') {
             this.retry = options.retry || 10;
-            this.queue = options.queue || 10;
+            this.queueLimit = options.queueLimit || 10;
         }
         this.eventBus.on('next', function() {
             if (self.queue.length > 0) {
@@ -39,20 +41,20 @@ class DownloadUtil {
         this.eventBus.on('error', function(requestId, err) {
             var index = self._findRequestId(requestId);
             if (index !== -1) {
-                request = self.doings = self.doings.splice(index, 1);
+                var request = self.doings.splice(index, 1)[0];
                 var errCount = request.errCount || 0;
-                request.errCount = errCount++;
+                request.errCount = errCount + 1;
                 request.err = err;
                 if (request.errCount < self.retry) {
                     self.queue.push(request);
                 } else {
-                    this.errors.push(request);
+                    self.errors.push(request);
                 }
             }
             self.eventBus.emit('next');
         });
         this.eventBus.on('start', function() {
-            for (var i = 0; i < self.queue.length; i++) {
+            for (var i = 0; i < self.queueLimit; i++) {
                 self.eventBus.emit('next');
             }
         })
@@ -86,18 +88,14 @@ class DownloadUtil {
             if (err) {
                 self.eventBus.emit('error', requestParams.requestId, err);
             } else {
-                let res = rsp.toJSON();
-                self.eventBus.emit('done', requestParams.requestId, body, res.headers);
+                if (rsp.statusCode >= 200 && rsp.statusCode < 300) {
+                    let res = rsp.toJSON();
+                    self.eventBus.emit('done', requestParams.requestId, body, res.headers);
+                } else {
+                    self.eventBus.emit('error', requestParams.requestId, rsp.statusCode);
+                }
             }
         })
     }
 }
 module.exports = DownloadUtil;
-var util = new DownloadUtil();
-util.push({
-    url: 'http://nodejs.cn/api/events.html#events_class_eventemitter',
-    callback: function(data, headers) {
-        console.log(data, headers);
-    }
-});
-util.start();
