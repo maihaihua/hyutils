@@ -20,6 +20,7 @@ function mkdirp(filepath, cb) {
 					break;
 				case 'EEXIST':
 					runCb(cb, null);
+					break;
 				default:
 					runCb(cb, err);
 			}

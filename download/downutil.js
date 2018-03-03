@@ -24,7 +24,7 @@ class DownloadUtil {
                 self.doings.push(request);
                 self._download(request);
             } else if (self.doings.length <= 0) {
-                self.eventBus.emit('finish');
+                self.eventBus.emit('finish', self.errors);
             }
         });
         this.eventBus.on('done', function(requestId, body, headers) {
@@ -38,7 +38,7 @@ class DownloadUtil {
             }
             self.eventBus.emit('next');
         });
-        this.eventBus.on('error', function(requestId, err) {
+        this.eventBus.on('error', function(err, requestId) {
             var index = self._findRequestId(requestId);
             if (index !== -1) {
                 var request = self.doings.splice(index, 1)[0];
@@ -48,6 +48,9 @@ class DownloadUtil {
                 if (request.errCount < self.retry) {
                     self.queue.push(request);
                 } else {
+                    if (typeof request.error === 'function') {
+                        request.error(err);
+                    }
                     self.errors.push(request);
                 }
             }
@@ -58,9 +61,9 @@ class DownloadUtil {
                 self.eventBus.emit('next');
             }
         })
-        this.eventBus.on('finish', function() {
-            console.log('finish', self.errors);
-        });
+        // this.eventBus.on('finish', function() {
+        //     console.log('finish', self.errors);
+        // });
     }
     _findRequestId(requestId) {
         var index = -1;
@@ -79,6 +82,9 @@ class DownloadUtil {
             this.queue.push(requests);
         }
     }
+    on(event, callback) {
+        this.eventBus.on(event, callback);
+    }
     start(options) {
         this.eventBus.emit('start');
     }
@@ -92,7 +98,7 @@ class DownloadUtil {
                     let res = rsp.toJSON();
                     self.eventBus.emit('done', requestParams.requestId, body, res.headers);
                 } else {
-                    self.eventBus.emit('error', requestParams.requestId, rsp.statusCode);
+                    self.eventBus.emit('error', rsp.statusCode, requestParams.requestId);
                 }
             }
         })

@@ -5,5 +5,8 @@ module.exports = {
 	},
 	download: {
 		DownloadUtil: require('./download/downUtil')
+	},
+	log: {
+		errorLog: require('./log/errorLog')
 	}
 }
