@@ -1,6 +1,6 @@
 {
   "name": "@maihaihua/hyutils",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "some useful utils tool",
   "main": "index.js",
   "scripts": {
