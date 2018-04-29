@@ -1,7 +1,8 @@
 module.exports = {
 	file: {
 		mkdirp: require('./file/mkdirp'),
-		writeFile: require('./file/writeFile'),
+		writeFile: require('./file/writeFile').writeFile,
+		writeFilePromise: require('./file/writeFile').writeFilePromise,
 		extract: require('./file/extract')
 	},
 	download: {

@@ -12,4 +12,17 @@ function writeFile(filepath, content, cb) {
 	})
 }
 
-module.exports = writeFile;
+function writeFilePromise(filepath, content, cb) {
+	return new Promise((reslove, reject) => {
+		writeFile(filepath, content.function(err) {
+			if (err) {
+				reject(err);
+			} else {
+				reslove();
+			}
+		})
+	})
+}
+
+module.exports.writeFile = writeFile;
+module.exports.writeFilePromise = writeFilePromise;
